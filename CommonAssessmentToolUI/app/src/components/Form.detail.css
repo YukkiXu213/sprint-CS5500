@@ -1,0 +1,106 @@
+/* Global styles */
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Card styles */
+.card {
+  padding: 40px 40px 50px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  position: relative;
+}
+
+/* Form title styles */
+.form-title {
+  text-align: center;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-top: 20px !important;
+  margin-bottom: 30px;
+}
+
+/* Section title styles */
+.section-title {
+  background-color: #f7f7f7;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: left;
+}
+
+/* Confirm icon styles */
+.confirm-icon {
+  cursor: pointer;
+  margin-left: 5px;
+  color: #28a745;
+  font-size: 0.9rem;
+}
+
+.confirm-icon:hover {
+  color: #218838;
+}
+
+/* Input container styles */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 5px 0;
+  padding: 0 30px;
+}
+
+/* Label container */
+.label-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+/* Lighter label color */
+.label-container .MuiTypography-subtitle1 {
+  color: #888;
+  font-weight: 500;
+}
+
+/* Edit field container */
+.editFieldContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Boolean dropdown styles */
+.booleanDropdown .MuiOutlinedInput-root {
+  padding: 0 !important;
+  min-height: 30px !important;
+}
+
+.booleanDropdown .MuiSelect-select {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  font-size: 0.9rem !important;
+  line-height: 1.2 !important;
+}
+
+/* Adjust icon positioning */
+.edit-icon {
+  cursor: pointer;
+  margin-left: 8px;
+  color: #66cdaa;
+  font-size: 0.9rem;
+}
+
+.edit-icon:hover {
+  color: #2ea62e;
+}

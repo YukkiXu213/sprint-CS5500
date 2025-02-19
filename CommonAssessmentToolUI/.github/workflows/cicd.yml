@@ -1,0 +1,86 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Switch to Ubuntu runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # Step 3: Install Docker (if needed)
+      # - name: Install Docker
+      #   run: |
+      #     brew install --cask docker
+      #     open --background -a Docker
+      #     # Wait for Docker to initialize
+      #     while ! docker system info > /dev/null 2>&1; do
+      #       echo "Waiting for Docker to initialize..."
+      #       sleep 5
+      #     done
+
+      # Step 4: Check Docker Version
+      - name: Check Docker Version
+        run: docker --version
+
+      # Step 5: Validate Directories
+      - name: Validate Directories
+        run: |
+          if [ ! -d "./app" ] || [ ! -d "./backend" ]; then
+            echo "Required directories do not exist" >&2
+            exit 1
+          fi
+
+      # Step 6: Install dependencies
+      - name: Install dependencies
+        working-directory: ./app
+        run: npm install
+
+      # Step 7: Run Linters
+      - name: Run ESLint
+        working-directory: ./app
+        run: npm run lint
+        env:
+          CI: true
+
+      # Step 8: Check for Formatting
+      - name: Run Prettier
+        working-directory: ./app
+        run: npx prettier --check "./**/*.{js,jsx,ts,tsx,json,css,scss,md}"
+
+      # Step 9: Build Docker Image for the backend
+      - name: Build Docker Image
+        working-directory: ./backend
+        run: docker build -t local-backend:${{ github.sha }} .
+
+      # Step 10: Run Docker Container for Testing
+      - name: Run Docker Container
+        working-directory: ./backend
+        run: |
+          docker run --name backend-container -d -p 8080:8080 local-backend:${{ github.sha }}
+          sleep 5
+
+      - name: Cleanup Docker
+        run: |
+          docker stop backend-container
+          docker rm backend-container
+          docker rmi local-backend:${{ github.sha }}
+
+      - name: Completion
+        run: echo "CI/CD Pipeline Completed Successfully"
+          sleep 5 # Wait for the container to start
+
