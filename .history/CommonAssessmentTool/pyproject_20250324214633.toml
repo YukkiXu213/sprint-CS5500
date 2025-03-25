@@ -1,0 +1,22 @@
+name = "common-assessment-tool"
+version = "0.1.0"
+description = "A backend API for managing clients and case workers with ML model support"
+authors = [{ name = "Your Team" }]
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy",
+    "python-dotenv",
+    "passlib[bcrypt]",
+    "python-jose",
+    "pydantic",
+    "scikit-learn",
+    "pandas"
+]
+
+[tool.setuptools.packages.find]
+where = ["app"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
