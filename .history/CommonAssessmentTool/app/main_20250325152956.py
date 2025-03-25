@@ -5,12 +5,11 @@ Handles database initialization and CORS middleware configuration.
 """
 
 from fastapi import FastAPI
-
-from ..app import models
-from ..app.database import engine
-from ..app.clients.router import router as clients_router
-from ..app.auth.router import router as auth_router
-from ..app.ml.router import router as ml_router
+from app import models
+from app.database import engine
+from app.clients.router import router as clients_router
+from app.auth.router import router as auth_router
+from app.ML_API.ml.router import router as ml_router
 from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize database tables
