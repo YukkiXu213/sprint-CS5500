@@ -7,7 +7,7 @@ Defines schemas for client data, predictions, and API responses.
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 from enum import IntEnum
-from app.models import UserRole
+from ..models import UserRole
 
 # Enums for validation
 class Gender(IntEnum):

@@ -3,7 +3,7 @@ Database models module defining SQLAlchemy ORM models for the Common Assessment 
 Contains the Client model for storing client information in the database.
 """
 
-from app.database import Base
+from ..app.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, CheckConstraint, Enum
 from sqlalchemy.orm import relationship
 import enum
