@@ -1,7 +1,7 @@
 # app/ml/router.py
 
 from fastapi import APIRouter, HTTPException
-from app.ml.model_list import list_available_models
+from app.ml.model_registry import list_available_models
 from app.ml.model_state import get_current_model, set_current_model
 
 router = APIRouter(prefix="/ml", tags=["machine_learning"])
