@@ -1,5 +1,3 @@
-import numpy as np
-
 def clean_input_data(input_data: dict) -> list:
     columns = [
         "age", "gender", "work_experience", "canada_workex", "dep_num",
@@ -27,10 +25,3 @@ def convert_text(text):
         if text in mapping:
             return mapping[text]
     return int(text) if str(text).isnumeric() else text
-
-
-def get_baseline_row(features: list) -> np.ndarray:
-    """
-    Convert cleaned feature list into a NumPy array for prediction.
-    """
-    return np.array(features, dtype=np.float32)

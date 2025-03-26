@@ -24,6 +24,9 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Load ML models on startup
+ModelManager.load_models()
+
 # Include routers
 app.include_router(auth_router)
 app.include_router(clients_router)
