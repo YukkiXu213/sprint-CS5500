@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.ml.model_list import list_available_models, get_model
+from app.ml.model_list import list_available_models
 from app.ml.model_state import get_current_model, set_current_model
-from pydantic import BaseModel
-import numpy as np
 
 router = APIRouter(prefix="/ml", tags=["machine_learning"])
 

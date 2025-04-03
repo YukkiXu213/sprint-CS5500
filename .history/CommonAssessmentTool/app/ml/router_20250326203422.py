@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.ml.model_list import list_available_models, get_model
+from app.ml.model_list import list_available_models
 from app.ml.model_state import get_current_model, set_current_model
 from pydantic import BaseModel
 import numpy as np
@@ -42,7 +42,7 @@ class ModelInput(BaseModel):
 
 @router.post("/predict/{model_name}")
 def predict(model_name: str, input: ModelInput):
-    model = get_model(model_name)
+    model = get_models(model_name)
     if model is None:
         return {"error": "Model not found"}
     

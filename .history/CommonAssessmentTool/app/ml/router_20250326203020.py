@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.ml.model_list import list_available_models, get_model
+from app.ml.model_list import list_available_models
 from app.ml.model_state import get_current_model, set_current_model
-from pydantic import BaseModel
-import numpy as np
 
 router = APIRouter(prefix="/ml", tags=["machine_learning"])
 
@@ -36,19 +34,3 @@ async def switch_model(model_name: str):
         raise HTTPException(status_code=400, detail=str(e))
 
     return {"message": f"Model switched to {model_name}"}
-
-class ModelInput(BaseModel):
-    features: list[float]  # expecting 24 numbers
-
-@router.post("/predict/{model_name}")
-def predict(model_name: str, input: ModelInput):
-    model = get_model(model_name)
-    if model is None:
-        return {"error": "Model not found"}
-    
-    if len(input.features) != 24:
-        return {"error": "Input must contain exactly 24 features"}
-
-    X = np.array(input.features).reshape(1, -1)
-    prediction = model.predict(X)
-    return {"model": model_name, "prediction": int(prediction[0])}
