@@ -1,42 +1,97 @@
-name: Python CI Pipeline
+name: CI Pipeline
 
 on:
   push:
-    branches: [master, main]
+    branches:
+      - main
   pull_request:
-    branches: [master, main]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest # Use the latest Ubuntu runner
-
+  lint:
+    name: Lint, Format, and Code Style Checks
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # Checkout the repository
+        uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5 # Set up Python environment
+      - name: Set up Python (for linting)
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install Linting Dependencies
         run: |
-          python -m pip install --upgrade pip  # Upgrade pip to the latest version
-          pip install setuptools wheel
-          pip install -r requirements.txt  # Install dependencies from requirements.txt
-          pip install pylint pytest
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # If not in requirements.txt, install them directly:
+          pip install flake8 black isort
+
+      - name: Run flake8 Linter
+        run: flake8 .
+
+      - name: Check Code Formatting with Black
+        run: black --check .
+
+      - name: Check Import Order with isort
+        run: isort --check-only .
+
+  tests:
+    name: Run Pytest
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10, 3.11]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # If not in requirements.txt, install pytest or other testing tools:
+          pip install pytest
 
       - name: Run Tests
-        run: |
-          python -m pytest tests/
+        run: pytest tests --maxfail=1 --disable-warnings -q
 
-      - name: Print Success Message
+  docker:
+    name: Docker Build and Smoke Test
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Lint Dockerfile with Hadolint
+        uses: hadolint/hadolint-action@v2
+        with:
+          dockerfile: Dockerfile
+
+      - name: Build Docker Image
+        run: docker build -t myapp:latest .
+
+      - name: Run Docker Container (Smoke Test)
         run: |
-          echo "CI Pipeline completed successfully!"
-          echo "========================"
-          echo "✓ Code checked out"
-          echo "✓ Python environment set up"
-          echo "✓ Dependencies installed"
-          echo "✓ Tests executed"
-          echo "✓ Linting completed"
-          echo "========================"
+          # Start the container in detached mode (map container port 80 to host 8080, adjust as needed)
+          docker run -d --name myapp_container -p 8080:80 myapp:latest
+          # Allow a few seconds for startup
+          sleep 10
+          # Print status and logs (for debugging if needed)
+          docker ps -a
+          docker logs myapp_container
+          # Stop and remove the container
+          docker stop myapp_container
+          docker rm myapp_container
