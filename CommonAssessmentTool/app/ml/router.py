@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException
-from app.ml.model_list import list_available_models, get_model
-from app.ml.model_state import get_current_model, set_current_model
-from pydantic import BaseModel
 import numpy as np
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
+from app.ml.model_list import get_model, list_available_models
+from app.ml.model_state import get_current_model, set_current_model
 
 router = APIRouter(prefix="/ml", tags=["machine_learning"])
+
 
 @router.get("/models")
 async def get_models():

@@ -1,5 +1,7 @@
+from typing import Any, List
+
 import numpy as np
-from typing import List, Any
+
 
 def clean_input_data(input_data: dict) -> List[Any]:
     columns = [
@@ -34,6 +36,7 @@ def clean_input_data(input_data: dict) -> List[Any]:
         output.append(convert_text(val) if isinstance(val, str) else val)
     return output
 
+
 def convert_text(text: Any) -> Any:
     mappings = [
         {"yes": 1, "no": 0, "true": 1, "false": 0, "": 0, "Yes": 1, "No": 0},
@@ -46,11 +49,13 @@ def convert_text(text: Any) -> Any:
             return mapping[text]
     return int(text) if str(text).isnumeric() else text
 
+
 def get_baseline_row(features: List[Any]) -> np.ndarray:
     """
     Convert cleaned feature list into a NumPy array for prediction.
     """
     return np.array(features, dtype=np.float32)
+
 
 def create_matrix(features: List[Any]) -> np.ndarray:
     """
@@ -64,6 +69,7 @@ def create_matrix(features: List[Any]) -> np.ndarray:
             modified[0] += i  # e.g., vary age
         interventions.append(modified)
     return np.array(interventions, dtype=np.float32)
+
 
 def intervention_row_to_names(row: np.ndarray) -> List[str]:
     """

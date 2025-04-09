@@ -1,5 +1,7 @@
-from typing import Dict, Optional, List, Any
+from typing import Any, Dict, List, Optional
+
 from app.clients.ml.models.logistic_regression import LogisticRegressionModel
+
 
 class ModelManager:
     _models: Dict[str, LogisticRegressionModel] = {}
@@ -7,7 +9,9 @@ class ModelManager:
 
     @classmethod
     def load_models(cls) -> None:
-        cls._models["logistic_regression"] = LogisticRegressionModel("models/model_logreg.pkl")
+        cls._models["logistic_regression"] = LogisticRegressionModel(
+            "models/model_logreg.pkl"
+        )
         cls._current_model = cls._models["logistic_regression"]
 
     @classmethod

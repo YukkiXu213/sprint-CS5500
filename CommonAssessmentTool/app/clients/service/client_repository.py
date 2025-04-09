@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Optional, Any
+from typing import Any, Dict, List, Optional
+
 from sqlalchemy.orm import Session
-from ...models import Client, ClientCase, User
+
+from ...models import Client, ClientCase
+
 
 class IClientRepository(ABC):
-
     @abstractmethod
     def get_client(self, client_id: int) -> Optional[Client]:
         pass
@@ -38,11 +40,15 @@ class IClientRepository(ABC):
         pass
 
     @abstractmethod
-    def update_client(self, client_id: int, update_data: Dict[str, Any]) -> Optional[Client]:
+    def update_client(
+        self, client_id: int, update_data: Dict[str, Any]
+    ) -> Optional[Client]:
         pass
 
     @abstractmethod
-    def update_client_services(self, client_id: int, user_id: int, update_data: Dict[str, Any]) -> Optional[ClientCase]:
+    def update_client_services(
+        self, client_id: int, user_id: int, update_data: Dict[str, Any]
+    ) -> Optional[ClientCase]:
         pass
 
     @abstractmethod
@@ -55,7 +61,6 @@ class IClientRepository(ABC):
 
 
 class SQLAlchemyClientRepository(IClientRepository):
-
     def __init__(self, db: Session) -> None:
         self.db = db
 
@@ -107,7 +112,9 @@ class SQLAlchemyClientRepository(IClientRepository):
             .first()
         )
 
-    def update_client(self, client_id: int, update_data: Dict[str, Any]) -> Optional[Client]:
+    def update_client(
+        self, client_id: int, update_data: Dict[str, Any]
+    ) -> Optional[Client]:
         client = self.get_client(client_id)
         if not client:
             return None
@@ -117,7 +124,9 @@ class SQLAlchemyClientRepository(IClientRepository):
         self.db.refresh(client)
         return client
 
-    def update_client_services(self, client_id: int, user_id: int, update_data: Dict[str, Any]) -> Optional[ClientCase]:
+    def update_client_services(
+        self, client_id: int, user_id: int, update_data: Dict[str, Any]
+    ) -> Optional[ClientCase]:
         client_case = self.get_client_case(client_id, user_id)
         if not client_case:
             return None
