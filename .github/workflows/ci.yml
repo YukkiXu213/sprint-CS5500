@@ -81,7 +81,7 @@ jobs:
       - name: Lint Dockerfile with Hadolint
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: ./Dockerfile
 
       - name: Build Docker Image
         run: docker build -t case-management-api .
