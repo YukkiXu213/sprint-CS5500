@@ -24,7 +24,6 @@ jobs:
 
       - name: Install Linting Dependencies
         run: |
-          cd CommonAssessmentTool
           python -m pip install --upgrade pip
           pip install setuptools wheel
           pip install -r requirements.txt
@@ -32,17 +31,14 @@ jobs:
 
       - name: Run flake8 Linter
         run: |
-          cd CommonAssessmentTool
           flake8 app
 
       - name: Check Code Formatting with Black
         run: |
-          cd CommonAssessmentTool
           black --check app
 
       - name: Check Import Order with isort
         run: |
-          cd CommonAssessmentTool
           isort --check-only app
 
       - name: Print Lint Success Message
@@ -67,7 +63,6 @@ jobs:
 
       - name: Install Test Dependencies
         run: |
-          cd CommonAssessmentTool
           python -m pip install --upgrade pip
           pip install setuptools wheel
           pip install -r requirements.txt
@@ -75,7 +70,6 @@ jobs:
 
       - name: Run Tests
         run: |
-          cd CommonAssessmentTool
           python -m pytest tests --maxfail=1 --disable-warnings -q
 
   docker:
