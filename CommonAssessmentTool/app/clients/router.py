@@ -6,9 +6,14 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.auth.router import get_admin_user, get_current_user
-from app.clients.schema import (ClientListResponse, ClientResponse,
-                                ClientUpdate, PredictionInput, ServiceResponse,
-                                ServiceUpdate)
+from app.clients.schema import (
+    ClientListResponse,
+    ClientResponse,
+    ClientUpdate,
+    PredictionInput,
+    ServiceResponse,
+    ServiceUpdate,
+)
 from app.clients.service.case_assignment_service import CaseAssignmentService
 from app.clients.service.client_case_service import ClientCaseService
 from app.clients.service.client_service import ClientService

@@ -3,7 +3,10 @@ from typing import Any, Dict
 import numpy as np
 
 from app.clients.ml.models.intervention_utils import (
-    create_matrix, get_baseline_row, intervention_row_to_names)
+    create_matrix,
+    get_baseline_row,
+    intervention_row_to_names,
+)
 from app.clients.ml.models.model_manager import ModelManager
 from app.clients.ml.models.preprocessing import clean_input_data
 
