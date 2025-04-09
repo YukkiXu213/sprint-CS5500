@@ -20,11 +20,11 @@ from app.clients.service.client_service import ClientService
 from app.clients.service.logic import interpret_and_calculate
 from app.database import get_db
 from app.models import User
+from app.clients.service.client_repository import SQLAlchemyClientRepository
 
 router = APIRouter(prefix="/clients", tags=["clients"])
 
 # --------- Basic CRUD ---------
-
 
 @router.get("/", response_model=ClientListResponse)
 async def get_clients(
@@ -33,7 +33,9 @@ async def get_clients(
     current_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db),
 ):
-    return ClientService.get_clients(db, skip, limit)
+    repo = SQLAlchemyClientRepository(db)
+    service = ClientService(repo)
+    return service.get_clients(skip, limit)
 
 
 @router.get("/{client_id}", response_model=ClientResponse)
@@ -42,7 +44,9 @@ async def get_client(
     current_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db),
 ):
-    return ClientService.get_client(db, client_id)
+    repo = SQLAlchemyClientRepository(db)
+    service = ClientService(repo)
+    return service.get_client(client_id)
 
 
 @router.put("/{client_id}", response_model=ClientResponse)
@@ -52,7 +56,9 @@ async def update_client(
     current_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db),
 ):
-    return ClientService.update_client(db, client_id, client_data)
+    repo = SQLAlchemyClientRepository(db)
+    service = ClientService(repo)
+    return service.update_client(client_id, client_data)
 
 
 @router.delete("/{client_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -61,9 +67,10 @@ async def delete_client(
     current_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db),
 ):
-    ClientService.delete_client(db, client_id)
+    repo = SQLAlchemyClientRepository(db)
+    service = ClientService(repo)
+    service.delete_client(client_id)
     return None
-
 
 # --------- Services ---------
 
