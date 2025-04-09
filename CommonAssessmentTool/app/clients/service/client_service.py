@@ -1,10 +1,9 @@
 from fastapi import HTTPException, status
-from typing import Dict
+from typing import Optional, Dict, Any
 from sqlalchemy.exc import SQLAlchemyError
 from .client_repository import IClientRepository
 from ...models import Client
 from ..schema import ClientUpdate
-
 
 class ClientService:
     def __init__(self, repo: IClientRepository):
@@ -15,7 +14,7 @@ class ClientService:
         if not client:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found",
+                detail=f"Client with id {client_id} not found"
             )
         return client
 
@@ -23,7 +22,7 @@ class ClientService:
         if skip < 0 or limit < 1:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Skip must be >= 0 and limit > 0",
+                detail="Skip must be >= 0 and limit > 0"
             )
         return self.repo.get_clients(skip, limit)
 
@@ -31,28 +30,26 @@ class ClientService:
         if not self.repo.get_client(client_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found",
+                detail=f"Client with id {client_id} not found"
             )
         try:
-            return self.repo.update_client(
-                client_id, update_data.dict(exclude_unset=True)
-            )
+            return self.repo.update_client(client_id, update_data.dict(exclude_unset=True))
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to update client: {str(e)}",
+                detail=f"Failed to update client: {str(e)}"
             )
 
     def delete_client(self, client_id: int):
         if not self.repo.get_client(client_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found",
+                detail=f"Client with id {client_id} not found"
             )
         try:
             self.repo.delete_client(client_id)
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to delete client: {str(e)}",
+                detail=f"Failed to delete client: {str(e)}"
             )

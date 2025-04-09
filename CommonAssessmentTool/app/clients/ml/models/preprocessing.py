@@ -1,3 +1,5 @@
+import numpy as np
+
 def clean_input_data(input_data: dict) -> list:
     columns = [
         "age",
@@ -30,7 +32,6 @@ def clean_input_data(input_data: dict) -> list:
         val = input_data.get(col, None)
         output.append(convert_text(val) if isinstance(val, str) else val)
     return output
-
 
 def convert_text(text):
     mappings = [

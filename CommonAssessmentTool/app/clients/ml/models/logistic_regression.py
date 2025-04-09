@@ -1,7 +1,6 @@
 import pickle
 from app.clients.ml.models.base_model import BaseModel
 
-
 class LogisticRegressionModel(BaseModel):
     def __init__(self, model_path: str):
         with open(model_path, "rb") as f:

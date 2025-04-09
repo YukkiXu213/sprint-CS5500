@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Optional, Any
 from sqlalchemy.orm import Session
-from ...models import Client, ClientCase
-
+from ...models import Client, ClientCase, User
 
 class IClientRepository(ABC):
 
@@ -43,9 +42,7 @@ class IClientRepository(ABC):
         pass
 
     @abstractmethod
-    def update_client_services(
-        self, client_id: int, user_id: int, update_data: Dict[str, Any]
-    ) -> Optional[ClientCase]:
+    def update_client_services(self, client_id: int, user_id: int, update_data: Dict[str, Any]) -> Optional[ClientCase]:
         pass
 
     @abstractmethod
@@ -120,9 +117,7 @@ class SQLAlchemyClientRepository(IClientRepository):
         self.db.refresh(client)
         return client
 
-    def update_client_services(
-        self, client_id: int, user_id: int, update_data: Dict[str, Any]
-    ) -> Optional[ClientCase]:
+    def update_client_services(self, client_id: int, user_id: int, update_data: Dict[str, Any]) -> Optional[ClientCase]:
         client_case = self.get_client_case(client_id, user_id)
         if not client_case:
             return None
@@ -156,4 +151,3 @@ class SQLAlchemyClientRepository(IClientRepository):
             self.db.query(ClientCase).filter(ClientCase.client_id == client_id).delete()
             self.db.delete(client)
             self.db.commit()
-

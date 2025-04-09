@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.models import Client
-
+from app.clients.schema import ServiceUpdate
 
 class ClientFilterService:
 
@@ -40,24 +40,25 @@ class ClientFilterService:
         if education_level is not None and not (1 <= education_level <= 14):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Education level must be between 1 and 14",
+                detail="Education level must be between 1 and 14"
             )
 
         if age_min is not None and age_min < 18:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Minimum age must be at least 18",
+                detail="Minimum age must be at least 18"
             )
 
         if gender is not None and gender not in [1, 2]:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Gender must be 1 or 2"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Gender must be 1 or 2"
             )
 
         # Apply dynamic filters
         filters = {
             Client.currently_employed: employment_status,
-            Client.age: (age_min, lambda v, x: v >= x),
+            Client.age: (age_min, lambda col, value: col >= value),
             Client.gender: gender,
             Client.level_of_schooling: education_level,
             Client.work_experience: work_experience,
@@ -95,5 +96,5 @@ class ClientFilterService:
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error retrieving clients: {str(e)}",
+                detail=f"Error retrieving clients: {str(e)}"
             )

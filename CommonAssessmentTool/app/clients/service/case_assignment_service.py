@@ -6,14 +6,18 @@ from app.models import Client, ClientCase, User
 class CaseAssignmentService:
 
     @staticmethod
-    def create_case_assignment(db: Session, client_id: int, case_worker_id: int):
+    def create_case_assignment(
+            db: Session,
+            client_id: int,
+            case_worker_id: int
+    ):
         """Create a new case assignment"""
         # Check if client exists
         client = db.query(Client).filter(Client.id == client_id).first()
         if not client:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Client with id {client_id} not found",
+                detail=f"Client with id {client_id} not found"
             )
 
         # Check if case worker exists
@@ -21,23 +25,19 @@ class CaseAssignmentService:
         if not case_worker:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Case worker with id {case_worker_id} not found",
+                detail=f"Case worker with id {case_worker_id} not found"
             )
 
         # Check if assignment already exists
-        existing_case = (
-            db.query(ClientCase)
-            .filter(
-                ClientCase.client_id == client_id, ClientCase.user_id == case_worker_id
-            )
-            .first()
-        )
+        existing_case = db.query(ClientCase).filter(
+            ClientCase.client_id == client_id,
+            ClientCase.user_id == case_worker_id
+        ).first()
 
         if existing_case:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Client {client_id} already has a case assigned to "
-                       f"case worker {case_worker_id}",
+                detail=f"Client {client_id} already has a case assigned to case worker {case_worker_id}"
             )
 
         try:
@@ -51,7 +51,7 @@ class CaseAssignmentService:
                 employment_related_financial_supports=False,
                 employer_financial_supports=False,
                 enhanced_referrals=False,
-                success_rate=0,
+                success_rate=0
             )
             db.add(new_case)
             db.commit()
@@ -62,7 +62,7 @@ class CaseAssignmentService:
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to create case assignment: {str(e)}",
+                detail=f"Failed to create case assignment: {str(e)}"
             )
 
     @staticmethod
@@ -72,12 +72,9 @@ class CaseAssignmentService:
         if not case_worker:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Case worker with id {case_worker_id} not found",
+                detail=f"Case worker with id {case_worker_id} not found"
             )
 
-        return (
-            db.query(Client)
-            .join(ClientCase)
-            .filter(ClientCase.user_id == case_worker_id)
-            .all()
-        )
+        return db.query(Client).join(ClientCase).filter(
+            ClientCase.user_id == case_worker_id
+        ).all()

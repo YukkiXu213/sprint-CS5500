@@ -1,8 +1,8 @@
 import pandas as pd
+import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 import pickle
-
 
 def train_logistic_model(
     data_path="data_commontool.csv", save_path="models/model_logreg.pkl"
@@ -54,7 +54,7 @@ def train_logistic_model(
     with open(save_path, "wb") as f:
         pickle.dump(model, f)
 
-    print(f" Logistic Regression model saved to {save_path}")
+    print(f"Logistic Regression model saved to {save_path}")
 
 
 if __name__ == "__main__":

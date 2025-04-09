@@ -1,6 +1,5 @@
 import numpy as np
 from typing import Any, Dict
-
 from app.clients.ml.models.preprocessing import clean_input_data
 from app.clients.ml.models.intervention_utils import (
     get_baseline_row,
@@ -8,7 +7,6 @@ from app.clients.ml.models.intervention_utils import (
     intervention_row_to_names,
 )
 from app.clients.ml.models.model_manager import ModelManager
-
 
 def process_results(baseline_pred: Any, matrix: np.ndarray) -> Dict[str, Any]:
     return {
@@ -21,7 +19,6 @@ def process_results(baseline_pred: Any, matrix: np.ndarray) -> Dict[str, Any]:
             for row in matrix
         ],
     }
-
 
 def interpret_and_calculate(input_data: Dict[str, Any]) -> Dict[str, Any]:
     features = clean_input_data(input_data)
