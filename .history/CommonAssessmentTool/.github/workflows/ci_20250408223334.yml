@@ -105,7 +105,7 @@ jobs:
           sleep 10
           # List running containers and output logs for debugging
           docker ps -a
-          docker logs case_mgmt_test
+          docker logs myapp_container
           # Clean up: stop and remove the container
-          docker stop case_mgmt_test
-          docker rm case_mgmt_test
+          docker stop myapp_container
+          docker rm myapp_container

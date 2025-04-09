@@ -99,13 +99,13 @@ jobs:
 
       - name: Run Docker Container (Smoke Test)
         run: |
-          # Start the container in detached mode (container port 8000 → host 8000)
-          docker run -d --name case_mgmt_test -p 8000:8000 case-management-api
+          # Start the container in detached mode (mapping container port 80 to host port 8080; adjust if needed)
+          docker run -d --name myapp_container -p 8080:80 myapp:latest
           # Allow a few seconds for the container to start up
           sleep 10
           # List running containers and output logs for debugging
           docker ps -a
-          docker logs case_mgmt_test
+          docker logs myapp_container
           # Clean up: stop and remove the container
-          docker stop case_mgmt_test
-          docker rm case_mgmt_test
+          docker stop myapp_container
+          docker rm myapp_container
