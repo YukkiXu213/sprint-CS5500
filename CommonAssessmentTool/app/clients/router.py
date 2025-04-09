@@ -73,6 +73,7 @@ async def delete_client(
     service.delete_client(client_id)
     return None
 
+
 # --------- Services ---------
 
 
