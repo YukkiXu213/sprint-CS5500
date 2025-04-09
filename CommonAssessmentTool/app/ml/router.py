@@ -6,6 +6,7 @@ import numpy as np
 
 router = APIRouter(prefix="/ml", tags=["machine_learning"])
 
+
 @router.get("/models")
 async def get_models():
     """
@@ -37,15 +38,17 @@ async def switch_model(model_name: str):
 
     return {"message": f"Model switched to {model_name}"}
 
+
 class ModelInput(BaseModel):
     features: list[float]  # expecting 24 numbers
+
 
 @router.post("/predict/{model_name}")
 def predict(model_name: str, input: ModelInput):
     model = get_model(model_name)
     if model is None:
         return {"error": "Model not found"}
-    
+
     if len(input.features) != 24:
         return {"error": "Input must contain exactly 24 features"}
 

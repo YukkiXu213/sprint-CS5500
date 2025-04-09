@@ -32,8 +32,8 @@ app.include_router(ml_router)
 # Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],     # Allows all origins
-    allow_methods=["*"],     # Allows all methods
-    allow_headers=["*"],     # Allows all headers
+    allow_origins=["*"],  # Allows all origins
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
     allow_credentials=True,
 )
