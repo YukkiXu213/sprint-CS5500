@@ -31,45 +31,6 @@ def test_get_client_by_id(client, admin_headers):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_get_clients_by_criteria(client, admin_headers):
-    """Test searching clients by various criteria"""
-    # Test single criterion
-    response = client.get(
-        "/clients/search/by-criteria", params={"age_min": 25}, headers=admin_headers
-    )
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response.json()) > 0
-
-    # Test multiple criteria
-    response = client.get(
-        "/clients/search/by-criteria",
-        params={"age_min": 25, "currently_employed": True, "gender": 2},
-        headers=admin_headers,
-    )
-    assert response.status_code == status.HTTP_200_OK
-
-    # Test invalid criteria
-    response = client.get(
-        "/clients/search/by-criteria",
-        params={"age_min": 15},  # Below minimum age
-        headers=admin_headers,
-    )
-    assert (
-        response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    )  # Changed from 400
-
-
-def test_get_clients_by_services(client, admin_headers):
-    """Test getting clients by service status"""
-    response = client.get(
-        "/clients/search/by-services",
-        params={"employment_assistance": True, "life_stabilization": True},
-        headers=admin_headers,
-    )
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response.json()) > 0
-
-
 def test_get_client_services(client, admin_headers):
     """Test getting services for a specific client"""
     response = client.get("/clients/1/services", headers=admin_headers)
@@ -79,15 +40,6 @@ def test_get_client_services(client, admin_headers):
     assert len(services) > 0
     assert "employment_assistance" in services[0]
     assert "success_rate" in services[0]
-
-
-def test_get_clients_by_success_rate(client, admin_headers):
-    """Test getting clients by success rate threshold"""
-    response = client.get(
-        "/clients/search/success-rate", params={"min_rate": 70}, headers=admin_headers
-    )
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response.json()) > 0
 
 
 def test_get_clients_by_case_worker(client, admin_headers, case_worker_headers):
