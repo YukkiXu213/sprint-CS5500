@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from app.models import Client
 
+
 class ClientFilterService:
 
     @staticmethod
@@ -31,7 +32,7 @@ class ClientFilterService:
         attending_school: Optional[bool] = None,
         substance_use: Optional[bool] = None,
         time_unemployed: Optional[int] = None,
-        need_mental_health_support_bool: Optional[bool] = None
+        need_mental_health_support_bool: Optional[bool] = None,
     ):
         """Get clients filtered by any combination of criteria"""
         query = db.query(Client)
@@ -39,19 +40,18 @@ class ClientFilterService:
         if education_level is not None and not (1 <= education_level <= 14):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Education level must be between 1 and 14"
+                detail="Education level must be between 1 and 14",
             )
-        
+
         if age_min is not None and age_min < 18:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Minimum age must be at least 18"
+                detail="Minimum age must be at least 18",
             )
 
         if gender is not None and gender not in [1, 2]:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Gender must be 1 or 2"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Gender must be 1 or 2"
             )
 
         # Apply dynamic filters
@@ -95,5 +95,5 @@ class ClientFilterService:
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error retrieving clients: {str(e)}"
+                detail=f"Error retrieving clients: {str(e)}",
             )
