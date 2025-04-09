@@ -5,15 +5,8 @@ Contains the Client model for storing client information in the database.
 
 import enum
 
-from sqlalchemy import (
-    Boolean,
-    CheckConstraint,
-    Column,
-    Enum,
-    ForeignKey,
-    Integer,
-    String,
-)
+from sqlalchemy import (Boolean, CheckConstraint, Column, Enum, ForeignKey,
+                        Integer, String)
 from sqlalchemy.orm import relationship
 
 from app.database import Base
