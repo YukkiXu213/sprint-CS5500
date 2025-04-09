@@ -35,10 +35,8 @@ class ClientCaseService:
         if not client_case:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=(
-                    f"No case found for client {client_id} with "
-                    f"case worker {user_id}."
-                ),
+                detail=
+                f"No case found for client {client_id} with case worker {user_id}.",
             )
 
         update_data = service_update.dict(exclude_unset=True)

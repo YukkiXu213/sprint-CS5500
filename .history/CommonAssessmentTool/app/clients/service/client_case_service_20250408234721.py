@@ -35,10 +35,8 @@ class ClientCaseService:
         if not client_case:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=(
-                    f"No case found for client {client_id} with "
-                    f"case worker {user_id}."
-                ),
+                detail=
+                f"No case found for client {client_id} with case worker {user_id}.",
             )
 
         update_data = service_update.dict(exclude_unset=True)
@@ -60,9 +58,9 @@ class ClientCaseService:
     def get_clients_by_services(db: Session, **service_filters: Optional[bool]):
         """Get clients filtered by multiple service statuses."""
         query = db.query(Client).join(ClientCase)
-        for service_name, stat in service_filters.items():
-            if stat is not None:
-                filter_criteria = getattr(ClientCase, service_name) == stat
+        for service_name, status in service_filters.items():
+            if status is not None:
+                filter_criteria = getattr(ClientCase, service_name) == status
                 query = query.filter(filter_criteria)
         try:
             return query.all()

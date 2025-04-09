@@ -1,0 +1,123 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint, Format, and Code Style Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./CommonAssessmentTool
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python (for linting)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Linting Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
+          pip install -r requirements.txt
+          pip install flake8 black isort mypy
+
+      - name: Run flake8 Linter
+        run: flake8 app
+
+      - name: Check Code Formatting with Black
+        run: black --check app
+
+      - name: Check Import Order with isort
+        run: isort --check-only app
+
+  tests:
+    name: Run Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./CommonAssessmentTool
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10, 3.11]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run Tests
+        run: python -m pytest tests --maxfail=1 --disable-warnings -q
+
+  docker:
+    name: Docker Build and Smoke Test
+    needs: tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./CommonAssessmentTool
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Lint Dockerfile with Hadolint
+        uses: hadolint/hadolint-action@v2
+        with:
+          dockerfile: Dockerfile
+
+      - name: Build Docker Image
+        run: docker build -t case-management-api .
+
+      - name: Run Docker Container (Smoke Test)
+        run: |
+          docker run -d --name case_mgmt_test -p 8000:8000 case-management-api
+          sleep 10
+          docker ps -a
+          docker logs case_mgmt_test
+          docker stop case_mgmt_test
+          docker rm case_mgmt_test
+
+  deploy:
+    name: Deploy (Local Test)
+    needs: docker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./CommonAssessmentTool
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t case-management-api .
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8000:8000 case-management-api
+          sleep 10
+
+      - name: Verify with curl
+        run: curl http://localhost:8000/docs
