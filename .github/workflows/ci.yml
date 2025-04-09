@@ -81,7 +81,7 @@ jobs:
       - name: Lint Dockerfile with Hadolint
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: ./Dockerfile
+          dockerfile: CommonAssessmentTool/Dockerfile
 
       - name: Build Docker Image
         run: docker build -t case-management-api .
@@ -103,7 +103,8 @@ jobs:
       run:
         working-directory: ./CommonAssessmentTool
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Build Docker image
         run: docker build -t case-management-api .
