@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -40,9 +40,6 @@ jobs:
 
       - name: Check Import Order with isort
         run: isort --check-only app
-
-      - name: Print Lint Success Message
-        run: echo "Lint, Black, isort, and MyPy checks passed."
 
   tests:
     name: Run Tests
@@ -103,3 +100,24 @@ jobs:
           docker logs case_mgmt_test
           docker stop case_mgmt_test
           docker rm case_mgmt_test
+
+  deploy:
+    name: Deploy (Local Test)
+    needs: docker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./CommonAssessmentTool
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t case-management-api .
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8000:8000 case-management-api
+          sleep 10
+
+      - name: Verify with curl
+        run: curl http://localhost:8000/docs
