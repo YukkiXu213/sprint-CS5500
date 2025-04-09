@@ -26,6 +26,7 @@ router = APIRouter(prefix="/clients", tags=["clients"])
 
 # --------- Basic CRUD ---------
 
+
 @router.get("/", response_model=ClientListResponse)
 async def get_clients(
     skip: int = Query(0, ge=0),
