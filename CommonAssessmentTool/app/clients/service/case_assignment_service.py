@@ -2,13 +2,14 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.models import Client, ClientCase, User
 
+
 class CaseAssignmentService:
 
     @staticmethod
     def create_case_assignment(
-        db: Session, 
-        client_id: int,
-        case_worker_id: int
+            db: Session,
+            client_id: int,
+            case_worker_id: int
     ):
         """Create a new case assignment"""
         # Check if client exists
@@ -73,7 +74,7 @@ class CaseAssignmentService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Case worker with id {case_worker_id} not found"
             )
-            
+
         return db.query(Client).join(ClientCase).filter(
             ClientCase.user_id == case_worker_id
         ).all()

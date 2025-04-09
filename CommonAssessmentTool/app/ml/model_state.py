@@ -2,7 +2,6 @@ from app.ml.model_list import get_model
 
 _current_model = "logistic_regression"
 
-
 def get_current_model():
     return _current_model
 

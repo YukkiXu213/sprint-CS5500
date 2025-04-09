@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from typing import Optional, Dict, Any
 from sqlalchemy.exc import SQLAlchemyError
 from .client_repository import IClientRepository
-from ...models import Client, ClientCase, User
+from ...models import Client
 from ..schema import ClientUpdate
 
 class ClientService:
@@ -22,7 +22,7 @@ class ClientService:
         if skip < 0 or limit < 1:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Skip must be >= 0 and limit > 0",
+                detail="Skip must be >= 0 and limit > 0"
             )
         return self.repo.get_clients(skip, limit)
 

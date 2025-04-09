@@ -16,7 +16,7 @@ neural_net = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=500).fit(X_dumm
 available_models = {
     "logistic_regression": logistic_regression,
     "random_forest": random_forest,
-    "neural_net": neural_net
+    "neural_net": neural_net,
 }
 
 def list_available_models():

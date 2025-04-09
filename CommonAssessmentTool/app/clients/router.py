@@ -1,8 +1,8 @@
 # app/clients/router.py
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List
 from app.auth.router import get_current_user, get_admin_user
 from app.models import User
 from app.database import get_db

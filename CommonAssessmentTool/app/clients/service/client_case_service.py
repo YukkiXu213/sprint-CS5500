@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from typing import Optional
-from app.models import ClientCase
-from app.models import Client, User  
+from app.models import Client, ClientCase, User
 from app.clients.schema import ServiceUpdate
 
 class ClientCaseService:
@@ -20,7 +19,7 @@ class ClientCaseService:
 
     @staticmethod
     def update_client_services(
-        db: Session, 
+        db: Session,
         client_id: int,
         user_id: int,
         service_update: ServiceUpdate
@@ -30,7 +29,7 @@ class ClientCaseService:
             ClientCase.client_id == client_id,
             ClientCase.user_id == user_id
         ).first()
-    
+
         if not client_case:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -53,18 +52,13 @@ class ClientCaseService:
             )
 
     @staticmethod
-    def get_clients_by_services(
-        db: Session,
-        **service_filters: Optional[bool]
-    ):
+    def get_clients_by_services(db: Session, **service_filters: Optional[bool]):
         """Get clients filtered by multiple service statuses."""
         query = db.query(Client).join(ClientCase)
-    
         for service_name, status in service_filters.items():
             if status is not None:
                 filter_criteria = getattr(ClientCase, service_name) == status
                 query = query.filter(filter_criteria)
-    
         try:
             return query.all()
         except Exception as e:
@@ -79,9 +73,11 @@ class ClientCaseService:
         if not (0 <= min_rate <= 100):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Success rate must be between 0 and 100"
+                detail="Success rate must be between 0 and 100",
             )
-            
-        return db.query(Client).join(ClientCase).filter(
-            ClientCase.success_rate >= min_rate
-        ).all()
+        return (
+            db.query(Client)
+            .join(ClientCase)
+            .filter(ClientCase.success_rate >= min_rate)
+            .all()
+        )
