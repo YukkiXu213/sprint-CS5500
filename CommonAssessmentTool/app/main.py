@@ -5,11 +5,14 @@ Handles database initialization and CORS middleware configuration.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app import models
 from app.database import engine
-from app.clients.router import router as clients_router
 from app.auth.router import router as auth_router
-from fastapi.middleware.cors import CORSMiddleware
+from app.clients.router import router as clients_router
+from app.ml.router import router as ml_router
+
 
 # Initialize database tables
 models.Base.metadata.create_all(bind=engine)
@@ -24,12 +27,13 @@ app = FastAPI(
 # Include routers
 app.include_router(auth_router)
 app.include_router(clients_router)
+app.include_router(ml_router)
 
 # Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_origins=["*"],     # Allows all origins
+    allow_methods=["*"],     # Allows all methods
+    allow_headers=["*"],     # Allows all headers
     allow_credentials=True,
 )
