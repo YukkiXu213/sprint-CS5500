@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - main
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -96,9 +98,10 @@ jobs:
           docker rm case_mgmt_test
 
   deploy:
-    name: Deploy (Local Test)
+    name: Deploy to Cloud Server
     needs: docker
     runs-on: ubuntu-latest
+    if: github.event_name == 'release'
     defaults:
       run:
         working-directory: ./CommonAssessmentTool
@@ -106,13 +109,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t case-management-api .
-
-      - name: Run Docker container
-        run: |
-          docker run -d -p 8000:8000 case-management-api
-          sleep 10
-
-      - name: Verify with curl
-        run: curl http://localhost:8000/docs
+      - name: Deploy via SSH
+        run: bash deploy.sh
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          USERNAME: ${{ secrets.USERNAME }}

@@ -119,4 +119,30 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on:
 2. **Testing** – Runs pytest
 3. **Docker Build & Smoke Test** – Validates Docker image and runs it
 
+### ☁️ Public Cloud Deployment
+
+The backend is also deployed on an AWS EC2 instance:
+
+🔗 **Swagger UI:** [http://ec2-54-202-247-139.us-west-2.compute.amazonaws.com:8000/docs](http://ec2-54-202-247-139.us-west-2.compute.amazonaws.com:8000/docs)
+
+🧪 Test Credentials:
+- Username: `admin`
+- Password: `admin123`
+
+## 🔄 CI/CD Pipeline
+
+Our GitHub Actions workflow is defined in `.github/workflows/ci-cd.yml`.
+
+### Triggers:
+- Push to `main`
+- Pull Requests to `main`
+- **GitHub Release**: When a release is published from `main`, the app is auto-deployed to the cloud server.
+
+### Pipeline Tasks:
+1. ✅ **Lint & Code Style Checks** – Black, Flake8, MyPy
+2. ✅ **Testing** – Runs all unit tests with Pytest
+3. ✅ **Docker Build & Smoke Test** – Validates Docker image and runs a local container
+4. ✅ **Deployment to AWS EC2** – Executes `deploy.sh` to copy code and restart container on the cloud
+
+> Deployment is secured via SSH key stored in GitHub Secrets.
 ---
