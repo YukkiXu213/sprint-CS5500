@@ -23,7 +23,7 @@ echo "➡️ Connecting to $REMOTE_USER@$REMOTE_HOST..."
 
 # 📦 Copy project directory to remote server
 ssh -i $SSH_KEY_PATH -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST "mkdir -p $REMOTE_APP_DIR"
-scp -i $SSH_KEY_PATH -o StrictHostKeyChecking=no -r . $REMOTE_USER@$REMOTE_HOST:$REMOTE_APP_DIR
+rsync -avz --exclude='__pycache__/' --exclude='*.pyc' -e "ssh -i $SSH_KEY_PATH -o StrictHostKeyChecking=no" ./ $REMOTE_USER@$REMOTE_HOST:$REMOTE_APP_DIR
 
 # 🚀 Restart Docker services on remote
 ssh -i $SSH_KEY_PATH -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
